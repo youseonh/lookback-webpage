@@ -9,10 +9,6 @@ type IMainProps = {
 };
 
 const MainLayout = (props: IMainProps) => {
-  // const {
-  //   token: { colorBgContainer },
-  // } = theme.useToken();
-
   return (
     <Layout className="layout">
       {/* 헤더 */}
