@@ -24,7 +24,7 @@ import axios from "axios";
 export const useGetWayBack = (url: string, options: { staleTime: number; cacheTime: number }) => {
   const queryKey = `/api/cdx/search/cdx`;
   const queryFn = axios
-    .get(`${queryKey}?url=${url}&date_range=2013-01-01:2023-01-01&limit=100`)
+    .get(`${queryKey}?url=${url}/&matchType=prefix&fl=timestamp,mimetype,original,digest&output=json&from=2013&to=2013`)
     .then((res) => res.data);
   return useQuery([queryKey, url], () => queryFn, { ...options });
 
