@@ -50,14 +50,15 @@ const Detail = () => {
     init();
     // 받아온 데이터가 있으면
     if (data && data.length !== 0) {
-      const tempColumns = data.shift();
+      // const tempColumns = data.shift();
+      const tempColumns = data[0];
       setColumns(
         tempColumns.map((col: string) => {
           return { title: col, key: col, dataIndex: col };
         }),
       );
-
-      data.forEach((dataObj: DataType) => {
+      for (let i = 1; i < data.length; i++) {
+        const dataObj = data[i];
         const reducedDatas = tempColumns.reduce((acc, curr: string, idx: AllowedKeys) => {
           if (curr === "timestamp") {
             return { ...acc, [curr]: dayjs(dataObj[idx]).format("YYYY.MM.DD HH:mm:ss") };
@@ -67,7 +68,18 @@ const Detail = () => {
         setTableData((prev) => {
           return [...prev, ...[reducedDatas]];
         });
-      });
+      }
+      // data.forEach((dataObj: DataType) => {
+      //   const reducedDatas = tempColumns.reduce((acc, curr: string, idx: AllowedKeys) => {
+      //     if (curr === "timestamp") {
+      //       return { ...acc, [curr]: dayjs(dataObj[idx]).format("YYYY.MM.DD HH:mm:ss") };
+      //     }
+      //     return { ...acc, [curr]: dataObj[idx] };
+      //   }, new Object());
+      //   setTableData((prev) => {
+      //     return [...prev, ...[reducedDatas]];
+      //   });
+      // });
     }
   }, [data]);
 
