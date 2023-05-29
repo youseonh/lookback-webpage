@@ -5,7 +5,7 @@ import { useState } from "react";
  */
 export default function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(() => {
-    // 브라우저에서만 실행되도록 하기 위해 window 확인
+    // next.js에서 SSR을 할 때 페이지를 처음 렌더링 하는 과정에서 window나 document객체가 존재하지 않음.
     if (typeof window === "undefined") {
       return initialValue;
     }
