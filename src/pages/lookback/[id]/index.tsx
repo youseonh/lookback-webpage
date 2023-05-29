@@ -37,7 +37,7 @@ const Detail = () => {
     for (const value of storedValue) {
       const { name, url } = value;
       if (name === router.query.id) {
-        setCurrentUrl(name);
+        setCurrentUrl(url);
       }
     }
     // 초기화
