@@ -54,6 +54,18 @@ const Detail = () => {
       const tempColumns = data[0];
       setColumns(
         tempColumns.map((col: string) => {
+          if (col === "original") {
+            return {
+              title: col,
+              key: col,
+              dataIndex: col,
+              render: (text: string) => (
+                <a href={text} target="_blank" rel="noreferrer">
+                  {text}
+                </a>
+              ),
+            };
+          }
           return { title: col, key: col, dataIndex: col };
         }),
       );
@@ -69,17 +81,6 @@ const Detail = () => {
           return [...prev, ...[reducedDatas]];
         });
       }
-      // data.forEach((dataObj: DataType) => {
-      //   const reducedDatas = tempColumns.reduce((acc, curr: string, idx: AllowedKeys) => {
-      //     if (curr === "timestamp") {
-      //       return { ...acc, [curr]: dayjs(dataObj[idx]).format("YYYY.MM.DD HH:mm:ss") };
-      //     }
-      //     return { ...acc, [curr]: dataObj[idx] };
-      //   }, new Object());
-      //   setTableData((prev) => {
-      //     return [...prev, ...[reducedDatas]];
-      //   });
-      // });
     }
   }, [data]);
 
