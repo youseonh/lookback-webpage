@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Card } from "antd";
+import { Card, Button } from "antd";
 
 export const StyledCard = styled(Card)`
   min-width: 250px;
@@ -8,4 +8,11 @@ export const StyledCard = styled(Card)`
   .ant-card-body {
     min-height: 120px;
   }
+  .ant-card-actions > li {
+    margin: 0px;
+  }
+`;
+
+export const StyledButton = styled(Button)`
+  width: 100%;
 `;

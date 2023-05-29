@@ -85,7 +85,7 @@ const Index = () => {
       if (storedValue[i]) {
         newArr.push(<CustomCard key={i} {...storedValue[i]} />);
       } else {
-        newArr.push(<CustomCard key={i} name="" url="" />);
+        newArr.push(<CustomCard key={i} />);
       }
     }
     setCardNodeArr(newArr);
