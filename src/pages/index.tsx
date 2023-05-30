@@ -1,16 +1,12 @@
 import React, { useState, useEffect, ReactNode } from "react";
-import { Button, Row, Modal, Form, Input, notification, message } from "antd";
+import { Row, Modal, Form, Input, notification, message } from "antd";
 import MainLayout from "@components/Layout";
 import CustomCard from "@components/Card";
 import { ContentWrap, ButtonWrap, ModalContent } from "./styles";
-import useLocalStorage from "../hooks/useLocalStorage";
-
-type NotificationType = "success" | "info" | "warning" | "error";
-
-interface ILocalStorage {
-  name: string;
-  url: string;
-}
+import { NotificationType } from "@/src/constant/notification";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { localStorageAtom } from "@/src/states";
+import { StyledButton } from "./styles";
 
 const Index = () => {
   const [api, contextHolder] = notification.useNotification();
@@ -18,15 +14,17 @@ const Index = () => {
   // 모달 관련
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [storedValue, setValue] = useLocalStorage<ILocalStorage[]>("look-web", []);
   const [cardNodeArr, setCardNodeArr] = useState<ReactNode[]>([]);
+  const setLocal = useSetRecoilState(localStorageAtom);
+
+  const localValues = useRecoilValue(localStorageAtom);
 
   const handleOk = () => {
     setConfirmLoading(true);
     const isPass = onCheckValidation();
     if (isPass) {
       save();
-      openNotificationWithIcon("success", "성공", "새 관심 URL 저장에 성공하였습니다.");
+      openNotificationWithIcon(NotificationType.SUCCESS, "성공", "새 관심 URL 저장에 성공하였습니다.");
       setOpen(false);
     }
     setConfirmLoading(false);
@@ -50,28 +48,30 @@ const Index = () => {
 
   const onCheckValidation = () => {
     if (checkDuplication()) {
-      openNotificationWithIcon("warning", "중복", "이미 중복되는 URL이 존재합니다.");
+      openNotificationWithIcon(NotificationType.WARNING, "중복", "이미 중복되는 URL이 존재합니다.");
       return false;
     }
     if (checkIsMax()) {
-      openNotificationWithIcon("warning", "초과", "최대 4개를 초과할 수 없습니다.");
+      openNotificationWithIcon(NotificationType.WARNING, "초과", "최대 4개를 초과할 수 없습니다.");
       return false;
     }
     return true;
   };
 
   const save = () => {
-    setValue([...storedValue, { name: form.getFieldValue("name"), url: form.getFieldValue("url") }]);
+    setLocal([...localValues, { name: form.getFieldValue("name"), url: form.getFieldValue("url") }]);
+    // setValue([...storedValue, { name: form.getFieldValue("name"), url: form.getFieldValue("url") }]);
   };
+
   const checkIsMax = () => {
-    if (storedValue.length > 4) return true;
+    if (localValues.length > 4) return true;
     return false;
   };
 
   const checkDuplication = () => {
     // 같은 url이 있으면 이미 사용중
-    for (const value of storedValue) {
-      const { name, url } = value;
+    for (const value of localValues) {
+      const { url } = value;
       if (url && url === form.getFieldValue("url")) {
         return true;
       }
@@ -82,14 +82,14 @@ const Index = () => {
   useEffect(() => {
     const newArr = [];
     for (let i = 0; i < 4; i++) {
-      if (storedValue[i]) {
-        newArr.push(<CustomCard key={i} {...storedValue[i]} />);
+      if (localValues[i]) {
+        newArr.push(<CustomCard key={i} {...localValues[i]} />);
       } else {
         newArr.push(<CustomCard key={i} />);
       }
     }
     setCardNodeArr(newArr);
-  }, [storedValue]);
+  }, [localValues]);
 
   // 모달 내 form 관련
   const { TextArea } = Input;
@@ -122,7 +122,7 @@ const Index = () => {
       <ContentWrap>
         {/* 추가 버튼 */}
         <ButtonWrap>
-          <Button onClick={onClickAdd}>관심 URL 추가</Button>
+          <StyledButton onClick={onClickAdd}>관심 URL 추가</StyledButton>
         </ButtonWrap>
         {/* 모달 */}
         <Modal
@@ -143,7 +143,7 @@ const Index = () => {
           </ModalContent>
         </Modal>
         {/* url 카드 목록 */}
-        <Row justify="space-around" align="middle">
+        <Row justify="space-around">
           {cardNodeArr.map((cardNode) => {
             return cardNode;
           })}
