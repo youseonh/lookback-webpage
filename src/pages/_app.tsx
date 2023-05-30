@@ -24,14 +24,7 @@ const App: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <RecoilRoot>
           <ConfigProvider
             theme={{
-              token: {
-                colorPrimary: "#9109ff",
-                colorBgBase: "#ffffff",
-                fontSize: 15,
-                colorInfo: "#9109ff",
-                colorWarning: "#FA8C16",
-                colorSuccess: "#58d619",
-              },
+              token: theme,
             }}>
             <ThemeProvider theme={theme}>
               <GlobalStyle />
