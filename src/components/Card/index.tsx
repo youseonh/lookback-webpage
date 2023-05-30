@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Card, Col, notification, Skeleton } from "antd";
 import { StyledCard, StyledButton } from "./styles";
-import { useOpenGraph } from "@/src/apis/useWayBack";
-import { NotificationType } from "@/src/constant/notification";
+import { useGetOpenGraph } from "@/src/apis/useOG";
+import { NotificationType } from "@enums/notification";
 import { localStorageAtom } from "@/src/states";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -26,7 +26,7 @@ const CustomCard = (props: ICard) => {
   const router = useRouter();
 
   const TIME = 1000 * 60 * 5; // 5m
-  const { data, isLoading, isError, isSuccess } = useOpenGraph(props.url, {
+  const { data, isLoading, isError, isSuccess } = useGetOpenGraph(props.url, {
     staleTime: TIME,
     cacheTime: TIME,
   });

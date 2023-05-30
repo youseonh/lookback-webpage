@@ -12,10 +12,8 @@ type IMainProps = {
 const MainLayout = (props: IMainProps) => {
   const { token } = theme.useToken();
   return (
-    <Layout className="layout">
-      {/* 헤더 */}
+    <Layout>
       <Header />
-      {/* 본문 Content */}
       <StyledContent color={token.colorBgLayout}>{props.children}</StyledContent>
     </Layout>
   );
