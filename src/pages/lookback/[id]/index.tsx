@@ -1,13 +1,15 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useGetWayBack } from "@/src/apis/useWayBack";
+import { useRecoilValue } from "recoil";
+import { localStorageAtom } from "@/src/states";
+import { Table, Spin } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import MainLayout from "@components/Layout";
 import { ContentWrap } from "@pages/styles";
-import { Typography, Table } from "antd";
-import { useGetWayBack } from "@/src/apis/useWayBack";
-import { useRouter } from "next/router";
-import type { ColumnsType } from "antd/es/table";
-import { useEffect, useState } from "react";
-import { localStorageAtom } from "@/src/states";
-import { useRecoilValue } from "recoil";
 import dayjs from "dayjs";
+import { TitleWrap, StyledTitle, TableWrap } from "./styles";
+// import { VirtualTable } from "@components/Table/virtualTableComp";
 
 type AllowedKeys = "key" | "urlkey" | "mimetype" | "statusCode" | "original" | "timestamp" | "digest" | "length";
 
@@ -25,7 +27,7 @@ const Detail = () => {
 
   const router = useRouter();
   const TIME = 1000 * 60 * 5; // 5m
-  const { data } = useGetWayBack(currentUrl, {
+  const { data, isSuccess, isError } = useGetWayBack(currentUrl, {
     staleTime: TIME,
     cacheTime: TIME,
   });
@@ -39,7 +41,9 @@ const Detail = () => {
     for (const value of localValues) {
       const { name, url } = value;
       if (name === router.query.id && url) {
-        setCurrentUrl(url);
+        setCurrentUrl(() => {
+          return url;
+        });
       }
     }
   };
@@ -82,15 +86,20 @@ const Detail = () => {
         });
       }
     }
-  }, [data]);
-
-  const { Title } = Typography;
+  }, [data, localValues]);
 
   return (
     <MainLayout>
       <ContentWrap>
-        <Title> {router.query.id} </Title>
-        <Table columns={columns} dataSource={tableData} />
+        <TitleWrap>
+          <StyledTitle> {router.query.id} </StyledTitle>
+        </TitleWrap>
+        <TableWrap>
+          <Spin spinning={!isSuccess && !isError}>
+            <Table columns={columns} dataSource={tableData} pagination={{ defaultPageSize: 50 }} />
+          </Spin>
+        </TableWrap>
+        {/* <VirtualTable columns={columns} dataSource={tableData} scroll={{ y: 550, x: "100vw" }} /> */}
       </ContentWrap>
     </MainLayout>
   );
