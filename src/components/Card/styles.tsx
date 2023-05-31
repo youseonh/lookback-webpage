@@ -5,6 +5,7 @@ export const StyledCard = styled(Card)`
   /* min-width: 250px; */
   border-radius: 20px;
   margin-top: 16;
+  min-width: 120px;
   box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
   .ant-card-body {
     min-height: 120px;
