@@ -1,12 +1,13 @@
 import React, { FC } from "react";
 import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import { theme } from "../styles/theme";
-import { GlobalStyle } from "../styles/global-style";
+import { theme } from "@/src/styles/theme";
+import { GlobalStyle } from "@/src/styles/global-style";
 import { RecoilRoot } from "recoil";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
 import { ConfigProvider } from "antd";
+import Head from "next/head";
 
 const client = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,10 @@ const App: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             }}>
             <ThemeProvider theme={theme}>
               <GlobalStyle />
+              <Head>
+                <title>LookBack</title>
+                <link rel="icon" href="favicon.ico" />
+              </Head>
               <Component {...pageProps} />
             </ThemeProvider>
           </ConfigProvider>
