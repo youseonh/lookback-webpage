@@ -6,7 +6,6 @@ import { Form, Modal, notification } from "antd";
 import { NotificationType } from "@enums/notification";
 import AddForm from "@components/Form/addUrlForm";
 import { openBasicNotify } from "@/src/utils/notification";
-import { removeWhitespace } from "@/src/utils/common";
 
 interface IProps {
   title: string;
@@ -20,8 +19,10 @@ const AddModal = (props: IProps) => {
   const setLocal = useSetRecoilState(localStorageAtom);
   // state
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [submit, setSubmit] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
+  const values = Form.useWatch([], form);
 
   // 4개 Max 초과 여부 확인
   const checkIsMax = () => {
@@ -30,7 +31,8 @@ const AddModal = (props: IProps) => {
   };
 
   // 중복 url 존재 여부 확인
-  const checkDuplication = (formUrl: string) => {
+  const checkDuplication = () => {
+    const formUrl = form.getFieldValue("url");
     for (const value of localValues) {
       const { url } = value;
       if (url && url === formUrl) {
@@ -40,24 +42,17 @@ const AddModal = (props: IProps) => {
     return false;
   };
 
-  const checkFieldValidation = () => {
-    form
-      .validateFields()
-      .then(() => {
-        form.resetFields();
-        return true;
-      })
-      .catch(() => {
-        return false;
-      });
-    return false;
-  };
-
   // 저장 전 유효성 검증
   const onCheckValidation = () => {
-    const url = removeWhitespace(form.getFieldValue("url"));
-
-    if (checkDuplication(url)) {
+    const name = form.getFieldValue("name");
+    const url = form.getFieldValue("url");
+    if (!name || !url || name === "" || url === "") {
+      if (submit) {
+        openBasicNotify(api, NotificationType.WARNING, "", "빈 값이 존재합니다.");
+      }
+      return false;
+    }
+    if (checkDuplication()) {
       openBasicNotify(api, NotificationType.WARNING, "중복", "이미 중복되는 URL이 존재합니다.");
       return false;
     }
@@ -74,18 +69,16 @@ const AddModal = (props: IProps) => {
   };
 
   // modal 액션 - 확인
-  const handleOk = () => {
+  const handleOk = async () => {
     setConfirmLoading(true);
-    const fieldPass = checkFieldValidation();
-    if (fieldPass) {
-      const isPass = onCheckValidation();
-      if (isPass) {
-        const name = removeWhitespace(form.getFieldValue("name"));
-        const url = removeWhitespace(form.getFieldValue("url"));
-        save(name, url);
-        openBasicNotify(api, NotificationType.SUCCESS, "성공", "새 관심 URL 저장에 성공하였습니다.");
-        props.changeOpen(false);
-      }
+    setSubmit(false);
+    const isPass = onCheckValidation();
+    if (submit && isPass) {
+      const name = form.getFieldValue("name");
+      const url = form.getFieldValue("url");
+      save(name, url);
+      openBasicNotify(api, NotificationType.SUCCESS, "성공", "새 관심 URL 저장에 성공하였습니다.");
+      props.changeOpen(false);
     }
     setConfirmLoading(false);
   };
@@ -93,8 +86,20 @@ const AddModal = (props: IProps) => {
   // modal 액션 - 취소
   const handleCancel = () => {
     form.resetFields();
+    setConfirmLoading(false);
     props.changeOpen(false);
   };
+
+  useEffect(() => {
+    form
+      .validateFields()
+      .then(() => {
+        setSubmit(true);
+      })
+      .catch(() => {
+        setSubmit(false);
+      });
+  }, [form, values]);
 
   return (
     <>
