@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import Image from "next/image";
 import { useRouter } from "next/router";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Card, Col, notification, Skeleton, Popconfirm } from "antd";
+import { Card, Col, notification, Skeleton, Popconfirm, message } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { StyledCard, StyledButton } from "./styles";
 // import { useGetOpenGraph } from "@/src/apis/useOG";
@@ -26,11 +25,7 @@ const CustomCard = (props: ICard) => {
   const localValues = useRecoilValue(localStorageAtom);
   const router = useRouter();
 
-  // const TIME = 1000 * 60 * 5; // 5m
-  // const { data } = useGetOpenGraph(props.url, {
-  //   staleTime: TIME,
-  //   cacheTime: TIME,
-  // });
+  // const { data } = useGetOpenGraph(props.url);
 
   // 모달 오픈 함수
   const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
@@ -47,7 +42,7 @@ const CustomCard = (props: ICard) => {
   //       setOGImage(content[1]);
   //     }
   //     if (ogImage) {
-  //       return <Image alt={ogImage} src={ogImage} width={300} />;
+  //       return <img alt={ogImage} src={ogImage} width={300} />;
   //     }
   //   }
   // };
@@ -56,8 +51,8 @@ const CustomCard = (props: ICard) => {
     if (name) router.push(`/lookback/${name}`);
   };
 
-  const onClickButton = () => {
-    console.log("click Action Button");
+  const onClickAdd = () => {
+    message.info("수정 기능 준비중입니다.");
   };
 
   // 삭제하는 함수
@@ -85,7 +80,7 @@ const CustomCard = (props: ICard) => {
         // cover={getOgImage()}
         actions={[
           <>
-            <StyledButton type="link" disabled={!isHoverable} onClick={onClickButton}>
+            <StyledButton type="link" disabled={!isHoverable} onClick={onClickAdd}>
               <EditOutlined key="edit" />
             </StyledButton>
           </>,
