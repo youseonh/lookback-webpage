@@ -6,9 +6,9 @@ import { localStorageAtom } from "@/src/states";
 import { Table, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import MainLayout from "@components/Layout";
-import { MainContainer } from "@pages/styles";
 import dayjs from "dayjs";
-import { TitleWrap, StyledTitle, TableWrap } from "./styles";
+import { MainContainer } from "@/src/styles/mainStyles";
+import { TitleWrap, StyledTitle, TableWrap } from "@/src/styles/detailStyles";
 import { TIMEFORMAT } from "@/src/enums/common";
 // import { VirtualTable } from "@components/Table/virtualTableComp";
 
@@ -30,11 +30,7 @@ const Detail = () => {
   // router
   const router = useRouter();
   // react-query
-  const TIME = 1000 * 60 * 5; // 5m
-  const { data, isSuccess, isError } = useGetWayBack(currentUrl, {
-    staleTime: TIME,
-    cacheTime: TIME,
-  });
+  const { data, isSuccess, isError } = useGetWayBack(currentUrl);
 
   // url 체크 함수
   const checkCurrentUrl = () => {

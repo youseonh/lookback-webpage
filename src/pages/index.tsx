@@ -4,7 +4,7 @@ import { localStorageAtom } from "@/src/states";
 import MainLayout from "@components/Layout";
 import CustomCard from "@components/Card";
 import AddModal from "@components/Modal";
-import { MainContainer, ButtonWrap, StyledButton, StyledRow } from "./styles";
+import { MainContainer, ButtonWrap, StyledButton, StyledRow } from "@/src/styles/mainStyles";
 
 const Index = () => {
   // Recoil State

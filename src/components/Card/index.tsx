@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import { useRouter } from "next/router";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Card, Col, notification, Skeleton } from "antd";
+import { Card, Col, notification, Skeleton, Popconfirm } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { StyledCard, StyledButton } from "./styles";
-import { useGetOpenGraph } from "@/src/apis/useOG";
+// import { useGetOpenGraph } from "@/src/apis/useOG";
 import { NotificationType } from "@enums/notification";
 import { localStorageAtom } from "@/src/states";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -18,18 +19,18 @@ export interface ICard {
 
 const CustomCard = (props: ICard) => {
   const [api] = notification.useNotification();
-  const [ogImage, setOGImage] = useState<string | null>(null);
+  // const [ogImage, setOGImage] = useState<string | null>(null);
   const [isHoverable, setIsHoverable] = useState(false);
   const [loading, setLoding] = useState(true);
   const setLocal = useSetRecoilState(localStorageAtom);
   const localValues = useRecoilValue(localStorageAtom);
   const router = useRouter();
 
-  const TIME = 1000 * 60 * 5; // 5m
-  const { data, isLoading, isError, isSuccess } = useGetOpenGraph(props.url, {
-    staleTime: TIME,
-    cacheTime: TIME,
-  });
+  // const TIME = 1000 * 60 * 5; // 5m
+  // const { data } = useGetOpenGraph(props.url, {
+  //   staleTime: TIME,
+  //   cacheTime: TIME,
+  // });
 
   // 모달 오픈 함수
   const openNotificationWithIcon = (type: NotificationType, message: string, description: string) => {
@@ -39,17 +40,17 @@ const CustomCard = (props: ICard) => {
     });
   };
 
-  const getOgImage = () => {
-    if (data?.data) {
-      const content = data.data.match(/<meta property="og:image" content="(.+?)">/);
-      if (content.length >= 2) {
-        setOGImage(content[1]);
-      }
-      if (ogImage) {
-        return <Image alt={ogImage} src={ogImage} width={300} />;
-      }
-    }
-  };
+  // const getOgImage = () => {
+  //   if (data?.data) {
+  //     const content = data.data.match(/<meta property="og:image" content="(.+?)">/);
+  //     if (content.length >= 2) {
+  //       setOGImage(content[1]);
+  //     }
+  //     if (ogImage) {
+  //       return <Image alt={ogImage} src={ogImage} width={300} />;
+  //     }
+  //   }
+  // };
 
   const goToDetailsPage = (name: string | null) => {
     if (name) router.push(`/lookback/${name}`);
@@ -81,7 +82,7 @@ const CustomCard = (props: ICard) => {
     <Col offset={1} xs={24} sm={11} md={11} lg={11} xl={5}>
       <StyledCard
         hoverable={isHoverable}
-        cover={getOgImage()}
+        // cover={getOgImage()}
         actions={[
           <>
             <StyledButton type="link" disabled={!isHoverable} onClick={onClickButton}>
@@ -89,9 +90,18 @@ const CustomCard = (props: ICard) => {
             </StyledButton>
           </>,
           <>
-            <StyledButton type="link" disabled={!isHoverable} onClick={onClickDelete}>
-              <DeleteOutlined key="delete" />
-            </StyledButton>
+            <Popconfirm
+              title="삭제 경고"
+              description="정말 삭제하시겠습니까?"
+              onConfirm={onClickDelete}
+              disabled={!isHoverable}
+              okText="Yes"
+              cancelText="No"
+              icon={<QuestionCircleOutlined style={{ color: "red" }} />}>
+              <StyledButton type="link" disabled={!isHoverable}>
+                <DeleteOutlined key="delete" />
+              </StyledButton>
+            </Popconfirm>
           </>,
         ]}>
         <div

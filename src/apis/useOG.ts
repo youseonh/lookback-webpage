@@ -1,12 +1,17 @@
 import { useQuery } from "react-query";
-import axios from "axios";
+import { apiRequest } from "@/src/utils/axios";
 
-export const useGetOpenGraph = (url: string | undefined, options: { staleTime: number; cacheTime: number }) => {
+export const useGetOpenGraph = (url: string | undefined) => {
   const queryKey = `/api-og/${url}`;
-  return useQuery([queryKey, url], () => axios.get(`${queryKey}`).then((res) => res.data), {
-    ...options,
-    enabled: !!url,
-    refetchOnWindowFocus: false,
-    retry: 0,
-  });
+  return useQuery(
+    [queryKey],
+    async () => {
+      const response = await apiRequest({
+        path: queryKey,
+        method: "GET",
+      });
+      return response.data;
+    },
+    { refetchOnWindowFocus: true, retry: 0 },
+  );
 };
