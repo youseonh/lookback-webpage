@@ -1,7 +1,7 @@
 ---
 ### ⭐ 데모
 
-https://lookbackweb.netlify.app/
+수정 후 재배포 예정입니다.
 ---
 
 ### ⭐ 구현 기능 관련
